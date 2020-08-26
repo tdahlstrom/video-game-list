@@ -11,7 +11,7 @@ class DataProvider extends React.Component {
       year_of_release: "none",
       platform: "",
       genre: "none",
-      limit: 20,
+      limit: 15,
       skip: 0,
       char: "",
       querySize: 0,

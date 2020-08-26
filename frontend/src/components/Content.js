@@ -93,11 +93,13 @@ class Content extends React.Component {
   }
 
   nextPage() {
-    this.context.update({
-      skip: this.context.skip + this.context.limit
-    }, () => {
-      this.props.getVideogames()
-    })
+    if((this.context.skip + this.context.limit) < this.context.querySize) {
+      this.context.update({
+        skip: this.context.skip + this.context.limit
+      }, () => {
+        this.props.getVideogames()
+      })
+    }
   }
 
   alphabetListChange(c) {
