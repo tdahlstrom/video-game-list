@@ -1,26 +1,9 @@
 const router = require('express').Router()
 let VideoGame = require('../models/videogame.model')
+let vgoc = require('./constructors/videoGameObjectConstructor')
 
 router.route('/').get((req, res) => {
-  let findObject = {
-    name: { $regex: new RegExp('^' + req.query.char, 'i') },
-  }
-
-  if (req.query.platform === "2600") {
-    findObject.platform = 2600
-  } else if(req.query.platform !== "") {
-    findObject.platform = req.query.platform
-  }
-
-  if(req.query.year_of_release === "") {
-    findObject.year_of_release = req.query.year_of_release
-  } else if(req.query.year_of_release !== "none") {
-    findObject.year_of_release = parseInt(req.query.year_of_release)
-  }
-
-  if(req.query.genre !== "none") {
-    findObject.genre = req.query.genre
-  }
+  findObject = vgoc.create(req)
 
   VideoGame.find(findObject)
     .sort({ name: 1 })
@@ -31,25 +14,7 @@ router.route('/').get((req, res) => {
 })
 
 router.route('/total').get((req, res) => {
-  let findObject = {
-    name: { $regex: new RegExp('^' + req.query.char, 'i') },
-  }
-
-  if (req.query.platform === "2600") {
-    findObject.platform = 2600
-  } else if(req.query.platform !== "") {
-    findObject.platform = req.query.platform
-  }
-
-  if(req.query.year_of_release === "") {
-    findObject.year_of_release = req.query.year_of_release
-  } else if(req.query.year_of_release !== "none") {
-    findObject.year_of_release = parseInt(req.query.year_of_release)
-  }
-
-  if(req.query.genre !== "none") {
-    findObject.genre = req.query.genre
-  }
+  findObject = vgoc.create(req)
 
   VideoGame.countDocuments(findObject)
     .then(count => res.json(count))

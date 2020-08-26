@@ -2,6 +2,7 @@ const router = require('express').Router()
 const mongoose = require('mongoose')
 let VideoGame = require('../models/videogame.model')
 let OwnedGame = require('../models/ownedGame.model')
+let ogoc = require('./constructors/ownedGameObjectConstructor')
 
 router.route('/').get((req, res) => {
   let ownedGameObjects = []
@@ -11,26 +12,7 @@ router.route('/').get((req, res) => {
     .then(ownedGames => {
       ownedGames.forEach(game => ownedGameObjects.push(mongoose.Types.ObjectId(game.object)))
 
-      findObject = {
-        _id: { $in: ownedGameObjects },
-        name: { $regex: new RegExp('^' + req.query.char, 'i') },
-      }
-
-      if (req.query.platform === "2600") {
-        findObject.platform = 2600
-      } else if(req.query.platform !== "") {
-        findObject.platform = req.query.platform
-      }
-
-      if(req.query.year_of_release === "") {
-        findObject.year_of_release = req.query.year_of_release
-      } else if(req.query.year_of_release !== "none") {
-        findObject.year_of_release = parseInt(req.query.year_of_release)
-      }
-
-      if(req.query.genre !== "none") {
-        findObject.genre = req.query.genre
-      }
+      findObject = ogoc.create(req, ownedGameObjects)
 
       VideoGame.find(findObject)
         .sort({ name: 1 })
@@ -49,26 +31,7 @@ router.route('/total').get((req, res) => {
     .then(ownedGames => {
       ownedGames.forEach(game => ownedGameObjects.push(mongoose.Types.ObjectId(game.object)))
 
-      findObject = {
-        _id: { $in: ownedGameObjects },
-        name: { $regex: new RegExp('^' + req.query.char, 'i') },
-      }
-
-      if (req.query.platform === "2600") {
-        findObject.platform = 2600
-      } else if(req.query.platform !== "") {
-        findObject.platform = req.query.platform
-      }
-
-      if(req.query.year_of_release === "") {
-        findObject.year_of_release = req.query.year_of_release
-      } else if(req.query.year_of_release !== "none") {
-        findObject.year_of_release = parseInt(req.query.year_of_release)
-      }
-
-      if(req.query.genre !== "none") {
-        findObject.genre = req.query.genre
-      }
+      findObject = ogoc.create(req, ownedGameObjects)
 
       VideoGame.countDocuments(findObject)
         .then(count => res.json(count))
